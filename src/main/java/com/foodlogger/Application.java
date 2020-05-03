@@ -1,5 +1,6 @@
 package com.foodlogger;
 
+import com.foodlogger.application.DatabaseManager;
 import com.google.gson.Gson;
 import com.foodlogger.ui.WebServer;
 import freemarker.cache.ClassTemplateLoader;
@@ -13,6 +14,7 @@ import spark.template.freemarker.FreeMarkerEngine;
 
 import java.io.File;
 import java.io.InputStream;
+import java.sql.DatabaseMetaData;
 import java.util.Objects;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
@@ -104,12 +106,16 @@ public class Application
     // This should be used by your Ajax Routes to generate JSON for the HTTP
     // response to Ajax requests.
     final Gson gson = new Gson();
-
+    //creates the database manager which keeps track of the data saved
+    DatabaseManager databaseManager = new DatabaseManager();
+    databaseManager.connect();
     // inject the game center and freemarker engine into web server
-    final WebServer webServer = new WebServer(templateEngine);
+    final WebServer webServer = new WebServer(templateEngine, databaseManager);
 
     // inject web server into application
     final Application app = new Application(webServer);
+
+
 
     // start the application up
     app.initialize();
@@ -140,6 +146,7 @@ public class Application
   private void initialize()
   {
     LOG.config("WebCheckers is initializing.");
+
 
     // configure Spark and startup the Jetty web server
     webServer.initialize();

@@ -12,12 +12,18 @@
 
 <div class="page">
     <div class="container">
-        <label for="uname"><b>Username</b></label>
-        <input type="text" placeholder="Enter Username" name="uname" required>
-        <label for="psw"><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" name="psw" required>
 
-        <button type="submit">Login</button>
+
+        <form action="/signin" method="POST">
+            <label for="uname" name="uname"><b>Username</b></label>
+            <input type="text" placeholder="Enter Username" name="uname" required>
+            <label for="psw" name="psw"><b>Password</b></label>
+            <input type="password" placeholder="Enter Password" name="psw" required>
+
+
+
+            <button type="submit">Login</button>
+        </form>
         <br>
         <div class="options">
             <label>

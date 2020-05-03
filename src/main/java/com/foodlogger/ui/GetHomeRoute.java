@@ -42,7 +42,7 @@ public class GetHomeRoute implements Route
       vm.put("username", "YOU ARENT LOGGED IN");
     }
     else{
-      vm.put(USERNAME_KEY, user.getUsername());
+      vm.put(SIGNIN_KEY, "Welcome back " + USERNAME_KEY);
     }
 
     vm.put("info", "hi");
