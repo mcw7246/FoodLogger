@@ -2,29 +2,41 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
-    <meta http-equiv="refresh" content="10">
     <title>FoodLogger | ${title}</title>
-    <link rel="stylesheet" type="text/css" href="/css/signin.css">
     <link href='https://fonts.googleapis.com/css?family=Annie Use Your Telescope' rel='stylesheet'>
     <link rel="stylesheet" type="text/css"  href="/css/style.css">
-    <div class="top"><h1>FoodLogger</h1></div>
+    <link rel="stylesheet" type="text/css"  href="/css/signin.css">
 </head>
 
 <body>
-<div class = "page">
-    <div class = "container">
-        <p> ${signupmsg}</p>
-        <form action="./signup" method="POST">
-            <label for="name"><b>First name: </b></label>
-            <input type="text" placeholder="Name" name="fname" required>
-            <label for="email"><b>Email: </b></label>
-            <input type="text" placeholder="your-email@yahoo.com" name="email" required>
-            <label for="username"><b>Username</b></label>
-            <input type="text" name="username" placeholder="Username">
-            <label for="psw"><b>Password</b></label>
-            <input type="password" name="psw" placeholder="Password">
-            <button type="submit">Sign up!</button>
-        </form>
-    </div>
+
+
+<div id="home" class="tabcontent">
+    <h1>Home Page</h1>
+    <p>Welcome to FoodLogger!</p>
+</div>
+<form action="/" method="GET">
+    <button class="tablink">Home</button>
+</form>
+
+<button class="tablink" formaction="#" id="active">Sign Up!</button>
+
+
+<h1>Food Logger | ${title}</h1>
+<div>${signuperrormsg}</div>
+
+<div class="container">
+
+    <form action="/signup" method="POST">
+        <label>Name: </label>
+        <input type="text" placeholder="Name" name="name">
+        <label>Email: </label>
+        <input placeholder="your-email@yahoo.com" name="email" type="text">
+        <input type="password" placeholder="password" name="psw">
+
+        <button type="submit">Sign up!</button>
+    </form>
+
 </div>
 </body>
+</html>

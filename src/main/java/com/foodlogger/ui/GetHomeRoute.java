@@ -1,6 +1,5 @@
 package com.foodlogger.ui;
 
-import com.foodlogger.model.User;
 import spark.*;
 
 import java.util.HashMap;
@@ -12,13 +11,15 @@ public class GetHomeRoute implements Route
 {
   static final String TITLE_ATTR = "title";
 
-  static final String TITLE = "Welcome to FoodLogger!";
-  static final String VIEW_NAME = "home.ftl";
-
-  static final String SIGNIN_KEY = "signin";
-  static final String USERNAME_KEY = "username";
+  static final String HOME_MSG_KEY = "homemsg";
   static final String USER_KEY = "user";
+  static final String SIGNIN_KEY = "signin";
 
+  static final String TITLE = "Welcome to FoodLogger!";
+
+
+
+  static final String VIEW_NAME = "home.ftl";
 
 
   private static final Logger LOG = Logger.getLogger(GetHomeRoute.class.getName());
@@ -32,22 +33,26 @@ public class GetHomeRoute implements Route
   public Object handle(Request request, Response response){
     final Session session = request.session();
 
+
     final Map<String, Object> vm = new HashMap<>();
-
     vm.put(TITLE_ATTR, TITLE);
-    User user = session.attribute(USER_KEY);
-    //check if the user is signed in
-    if(user == null){
-      vm.put(SIGNIN_KEY, false);
-      vm.put("username", "YOU ARENT LOGGED IN");
+
+    vm.put(SIGNIN_KEY, false);
+
+    //if the user is not signed in because it was a new session
+    if(session.attribute(SIGNIN_KEY) == null){
+      session.attribute(SIGNIN_KEY, false);
     }
-    else{
-      vm.put(SIGNIN_KEY, "Welcome back " + USERNAME_KEY);
+    //the user is signed in
+    if(session.attribute(SIGNIN_KEY)){
+      vm.put(SIGNIN_KEY, true);
+      vm.put(HOME_MSG_KEY, "Click on Log Food to get started!");
+    }
+    else{ //user is not signed in
+
     }
 
-    vm.put("info", "hi");
-    System.out.println(templateEngine.modelAndView(vm, VIEW_NAME));
-    System.out.println(vm);
+
     return templateEngine.render(templateEngine.modelAndView(vm, VIEW_NAME));
   }
 }

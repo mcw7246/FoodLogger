@@ -16,27 +16,22 @@
     <p>Welcome to FoodLogger!</p>
 </div>
 
-<div id="signin" class="tabcontent">
-    <h1>Sign In</h1>
-</div>
-
 <button class="tablink" formaction="#" id="active">HomePage</button>
-<form action="/signin" method="GET">
-    <button class="tablink">Sign In!</button>
-</form>
+<#if signin>
+    <form action="#">
+        <button class="tablink">Log Food!</button>
+    </form>
+    <#else>
+        <form action="/signin" method="GET">
+            <button class="tablink">Sign In!</button>
+        </form>
+</#if>
 
-<div class="content">
-    <h1>FoodLogger | ${title}</h1>
 
-    <div class="left">
-        <h3>${info}</h3>
-    </div>
-
-    <div class="right">
-        <h3>${info}</h3>
-    </div>
-</div>
-
+<h1>Food Logger | ${title}</h1>
+<#if signin>
+    <h3>${homemsg}</h3>
+</#if>
 
 </body>
 </html>

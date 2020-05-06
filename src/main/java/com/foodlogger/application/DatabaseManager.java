@@ -20,17 +20,16 @@ public class DatabaseManager
     return con;
   }
 
-  public void addUser(String email, String name, String username, String password) throws SQLException{
+  public void addUser(String email, String name, String password) throws SQLException{
     //creates an insert statement for the user when a
     //new user is created
       //creates the statement that is entered into the database
-      PreparedStatement pstmt = con.prepareStatement("INSERT INTO alluser(email, fname, username, psw) VALUES(?,?,?," +
+      PreparedStatement pstmt = con.prepareStatement("INSERT INTO alluser(email, fname, password) VALUES(?,?," +
               "?)" +
               ";");
       pstmt.setString(1, email);
       pstmt.setString(2, name);
-      pstmt.setString(3, username);
-      pstmt.setString(4, password);
+      pstmt.setString(3, password);
 
 
       //executes the preparedstatement
@@ -41,24 +40,23 @@ public class DatabaseManager
   /**
    * checks if the username that is entered is in the database
    * if it is, it call the @correctPassword method
-   * @param username the username that was entered
+   * @param email the email that was entered
    * @return whether the username is in the database
    */
-  public boolean hasRecord(String username) throws SQLException{
+  public boolean hasRecord(String email) throws SQLException{
     boolean exists = false;
-    String sql = "SELECT 1 FROM alluser where username = ?";
+    String sql = "SELECT 1 FROM alluser where email = ?";
     PreparedStatement ps = con.prepareStatement(sql);
-    ps.setString(1, username);
+    ps.setString(1, email);
     ResultSet rs = ps.executeQuery();
     if(rs.next()){
       final int count = rs.getInt(1);
       exists = true;
     }
-    System.out.println(exists);
     return exists;
   }
 
-  public boolean passwordMatches(String username, String password) throws SQLException{
+  public boolean passwordMatches(String email, String password) throws SQLException{
     boolean found = false;
     int rowNum = 1;
     Statement stmt = con.createStatement();
@@ -69,12 +67,11 @@ public class DatabaseManager
     while(!found){
       String name = rs.getString(rowNum);
       //looks for the username
-      if(name.equals(username)){
+      if(name.equals(email)){
         String psw = rs.getString(2);
         //checks if the password matches what it should be
         if(psw.equals(password)){
           found = true;
-          System.out.println("found bitches");
           break;
         }
       }

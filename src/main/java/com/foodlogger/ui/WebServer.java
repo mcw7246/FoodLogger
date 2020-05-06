@@ -1,10 +1,8 @@
 package com.foodlogger.ui;
 
 import com.foodlogger.application.DatabaseManager;
-import com.foodlogger.model.User;
 import spark.TemplateEngine;
 
-import javax.xml.crypto.Data;
 import java.util.Objects;
 import java.util.logging.Logger;
 
@@ -37,7 +35,7 @@ public class WebServer
     get(HOME_URL, new com.foodlogger.ui.GetHomeRoute(templateEngine));
     get(SIGNIN_URL, new GetSignInRoute(templateEngine));
     post(SIGNIN_URL, new PostSignInRoute(templateEngine, databaseManager));
-    get(SIGNUP_URL, new GetSignUpRoute(templateEngine));
+    get(SIGNUP_URL, new GetSignUpRoute(templateEngine, databaseManager));
     post(SIGNUP_URL, new PostSignUpRoute(templateEngine, databaseManager));
   }
 

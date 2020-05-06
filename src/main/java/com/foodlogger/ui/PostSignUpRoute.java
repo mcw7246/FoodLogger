@@ -1,7 +1,7 @@
 package com.foodlogger.ui;
 
 import com.foodlogger.application.DatabaseManager;
-import com.foodlogger.model.AccountVerification;
+import com.foodlogger.model.User;
 import spark.*;
 
 import java.sql.SQLException;
@@ -13,51 +13,54 @@ import static spark.Spark.halt;
 
 public class PostSignUpRoute implements Route
 {
-  static final String VIEW_NAME = "signup.ftl";
-
-  static final String SIGNUP_MSG_ATTR = "signupmsg";
-
-  static final String NAME_KEY = "fname";
-  static final String EMAIL_KEY = "email";
-  static final String USERNAME_KEY = "username";
-  static final String PASSWORD_KEY = "psw";
-
   TemplateEngine templateEngine;
   DatabaseManager databaseManager;
+
+  final String SIGNUP_MSG_ATTR = "signuperrormsg";
+  final String TITLE_ATTR = "title";
+
+  final String VIEW_NAME = "signup.ftl";
+
   public PostSignUpRoute(TemplateEngine templateEngine, DatabaseManager databaseManager){
     Objects.requireNonNull(templateEngine, "templateEngine must not be null");
-    this.templateEngine = templateEngine;
-    Objects.requireNonNull(databaseManager, "databaseManager must not be null");
+    Objects.requireNonNull(databaseManager, "databaseManager must not be null.");
     this.databaseManager = databaseManager;
+    this.templateEngine = templateEngine;
   }
 
-  public Object handle(Request request, Response response){
-    final Map<String, Object> vm = new HashMap<>();
-    vm.put(GetHomeRoute.TITLE_ATTR, GetHomeRoute.TITLE);
+  @Override
+  public String handle(Request request, Response response){
+    Session session = request.session();
 
-    AccountVerification accountVerification = new AccountVerification(databaseManager, templateEngine);
+    Map<String, Object> vm = new HashMap<>();
 
-    final Session session = request.session();
+    vm.put(TITLE_ATTR, "Sign up for Food Logger!");
 
-    final String email = request.queryParams(EMAIL_KEY);
-    final String fname = request.queryParams(NAME_KEY);
-    final String username = request.queryParams(USERNAME_KEY);
-    final String psw = request.queryParams(PASSWORD_KEY);
+    String name = request.queryParams("name");
+    String email = request.queryParams("email");
+    String psw = request.queryParams("psw");
 
-    System.out.println(username);
-    System.out.println(psw);
-    System.out.println("email: " + email);
-    System.out.println("fname: " + fname);
+    //if one of the fields is null, they have to be filed in
+    if(name == null || email == null || psw == null){
+      vm.put(SIGNUP_MSG_ATTR, "All of these fields must be filled.");
+      return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
+    }
 
     try{
-      if(databaseManager.hasRecord(username)){
-        vm.put(SIGNUP_MSG_ATTR, "The username is already taken. Please choose another");
+      //the email is already taken
+      if(databaseManager.hasRecord(email)){
+        vm.put(SIGNUP_MSG_ATTR, "This email is already associated with an account. Please log into this account or " +
+                "try another email.");
         return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
       }
       else{
-        databaseManager.addUser(email, fname, username, psw);
+        //adds the user to the database
+        databaseManager.addUser(email, name, psw);
+        User user = new User();
+
+        //sets the userkey to the new user
+        session.attribute(GetHomeRoute.USER_KEY, user);
         response.redirect(WebServer.HOME_URL);
-        halt();
       }
     }catch(SQLException e){
       System.out.println(e.getMessage());
@@ -66,5 +69,4 @@ public class PostSignUpRoute implements Route
 
     return null;
   }
-
 }
