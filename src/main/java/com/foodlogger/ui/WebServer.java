@@ -17,6 +17,9 @@ public class WebServer
   public static final String HOME_URL = "/";
   public static final String SIGNIN_URL = "/signin";
   public static final String SIGNUP_URL = "/signup";
+  public static final String LOGFOOD_URL = "/logfood";
+  public static final String CALENDAR_URL = "/calendar";
+
   private final TemplateEngine templateEngine;
   private final DatabaseManager databaseManager;
 
@@ -37,6 +40,9 @@ public class WebServer
     post(SIGNIN_URL, new PostSignInRoute(templateEngine, databaseManager));
     get(SIGNUP_URL, new GetSignUpRoute(templateEngine, databaseManager));
     post(SIGNUP_URL, new PostSignUpRoute(templateEngine, databaseManager));
+    get(LOGFOOD_URL, new GetLogFoodRoute(templateEngine, databaseManager));
+
+    get(CALENDAR_URL, new GetCalendarRoute(templateEngine, databaseManager));
   }
 
 }

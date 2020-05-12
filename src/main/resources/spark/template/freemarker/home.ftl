@@ -2,10 +2,10 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
-    <meta http-equiv="refresh" content="10">
     <title>FoodLogger | ${title}</title>
     <link href='https://fonts.googleapis.com/css?family=Annie Use Your Telescope' rel='stylesheet'>
     <link rel="stylesheet" type="text/css"  href="/css/style.css">
+    <link rel="stylesheet" type="text/css"  href="/css/signin.css">
 </head>
 
 <body>
@@ -16,22 +16,24 @@
     <p>Welcome to FoodLogger!</p>
 </div>
 
-<button class="tablink" formaction="#" id="active">HomePage</button>
-<#if signin>
-    <form action="#">
-        <button class="tablink">Log Food!</button>
+<button class="tablink" formaction="#" id="active">Home</button>
+<#if !signin>
+    <form action="/signin" method="GET">
+        <button class="tablink">Sign in!</button>
     </form>
     <#else>
-        <form action="/signin" method="GET">
-            <button class="tablink">Sign In!</button>
+        <form action="/logfood" method="GET">
+            <button class="tablink">Log food!</button>
+        </form>
+        <form action="/calendar" method="GET">
+            <button class="tablink">Calendar</button>
         </form>
 </#if>
 
-
 <h1>Food Logger | ${title}</h1>
-<#if signin>
-    <h3>${homemsg}</h3>
-</#if>
 
+
+
+</div>
 </body>
 </html>

@@ -58,8 +58,9 @@ public class PostSignUpRoute implements Route
         databaseManager.addUser(email, name, psw);
         User user = new User();
 
-        //sets the userkey to the new user
+        //sets the userkey to the new user and the signin boolean
         session.attribute(GetHomeRoute.USER_KEY, user);
+        session.attribute(GetHomeRoute.SIGNIN_KEY, true);
         response.redirect(WebServer.HOME_URL);
       }
     }catch(SQLException e){

@@ -2,7 +2,7 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
-    <title>FoodLogger | ${title}</title>
+    <title>Sign in</title>
     <link href='https://fonts.googleapis.com/css?family=Annie Use Your Telescope' rel='stylesheet'>
     <link rel="stylesheet" type="text/css"  href="/css/style.css">
     <link rel="stylesheet" type="text/css"  href="/css/signin.css">
@@ -10,13 +10,8 @@
 
 <body>
 
-
-<div id="home" class="tabcontent">
-    <h1>Home Page</h1>
-    <p>Welcome to FoodLogger!</p>
-</div>
-<form action="/" method="GET">
-    <button class="tablink">Home</button>
+<form action="/" method="GET">.
+    <button class="tablink" >Home</button>
 </form>
 
 <button class="tablink" formaction="#" id="active">Sign In!</button>
@@ -37,13 +32,15 @@
             <button type="submit">Sign in!</button>
         </form>
 
-        <input type="checkbox">Remember me.
-        <br>
+        <div class="options">
+            <input type="checkbox">Remember me.
+            <br>
 
-        <form action="/signup" method="GET">
-            <a href="/signup">Don't have an account? Create one!</a>
-        </form>
+            <form action="/signup" method="GET">
+                <a href="/signup">Don't have an account? Create one!</a>
+            </form>
 
+        </div>
     </div>
 </body>
 </html>
