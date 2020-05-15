@@ -12,12 +12,12 @@ public class GetHomeRoute implements Route
   static final String TITLE_ATTR = "title";
 
   static final String HOME_MSG_KEY = "homemsg";
-  static final String USER_KEY = "user";
+  static final String ACCOUNTMANAGER_KEY = "accountManager";
   static final String SIGNIN_KEY = "signin";
 
   static final String TITLE = "Welcome to FoodLogger!";
 
-
+  static final String EMAIL_ATTR = "email";
 
   static final String VIEW_NAME = "home.ftl";
 

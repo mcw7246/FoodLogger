@@ -1,6 +1,9 @@
 package com.foodlogger.application;
 
+import com.foodlogger.model.Food;
+
 import java.sql.*;
+import java.text.SimpleDateFormat;
 
 public class DatabaseManager
 {
@@ -36,6 +39,17 @@ public class DatabaseManager
       pstmt.execute();
 
   }
+
+  public void addFood(String email, String foods, String date, String calories) throws SQLException{
+    PreparedStatement pstmt = con.prepareStatement("INSERT INTO foodlog(user, food, date, calorie) VALUES(?,?,?,?);");
+    pstmt.setString(1, email);
+    pstmt.setString(2, foods);
+    pstmt.setString(3, date);
+    pstmt.setInt(4, Integer.parseInt(calories));
+
+    pstmt.execute();
+  }
+
 
   /**
    * checks if the username that is entered is in the database

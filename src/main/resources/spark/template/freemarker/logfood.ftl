@@ -18,7 +18,21 @@
 
 <h1>Food Logger | ${title}</h1>
 
+<div class="container">
 
+    <form action="/logfood" method="POST">
+        <label>Food: </label>
+        <input type="text" placeholder="Food" name="food">
+        <label>Calories: </label>
+        <input placeholder="Calories" name="calories" type="number">
+        <br>
+        <label>Date: </label>
+        <input type="date" placeholder="Date" name="date">
+
+        <button type="submit">Log Food!</button>
+    </form>
+
+</div>
 
 </body>
 </html>

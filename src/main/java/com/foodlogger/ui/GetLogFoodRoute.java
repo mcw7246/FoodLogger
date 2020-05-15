@@ -29,6 +29,7 @@ public class GetLogFoodRoute implements Route
 
     vm.put("title", "Log Food!");
 
+
     return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
   }
 

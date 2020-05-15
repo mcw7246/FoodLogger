@@ -58,6 +58,7 @@ public class PostSignInRoute implements Route
           if(databaseManager.passwordMatches(email, password)){
             vm.replace(GetHomeRoute.SIGNIN_KEY, true);
             session.attribute(GetHomeRoute.SIGNIN_KEY, true);
+            session.attribute(GetHomeRoute.EMAIL_ATTR, email);
             response.redirect(WebServer.HOME_URL);
             halt();
           }

@@ -41,7 +41,7 @@ public class WebServer
     get(SIGNUP_URL, new GetSignUpRoute(templateEngine, databaseManager));
     post(SIGNUP_URL, new PostSignUpRoute(templateEngine, databaseManager));
     get(LOGFOOD_URL, new GetLogFoodRoute(templateEngine, databaseManager));
-
+    post(LOGFOOD_URL, new PostLogFoodRoute(templateEngine, databaseManager));
     get(CALENDAR_URL, new GetCalendarRoute(templateEngine, databaseManager));
   }
 
