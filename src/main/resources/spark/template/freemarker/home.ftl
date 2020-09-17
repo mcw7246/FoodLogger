@@ -16,20 +16,22 @@
     <p>Welcome to FoodLogger!</p>
 </div>
 
-<button class="tablink" formaction="#" id="active">Home</button>
-<#if !signin>
-    <form action="/signin" method="GET">
-        <button class="tablink">Sign in!</button>
-    </form>
-    <#else>
-        <form action="/logfood" method="GET">
-            <button class="tablink">Log food!</button>
-        </form>
-        <form action="/calendar" method="GET">
-            <button class="tablink">Calendar</button>
-        </form>
-</#if>
+<div class="header">
 
+<button class="tablink" formaction="#" id="active">Home</button>
+    <#if !signin>
+        <form action="/signin" method="GET">
+            <button class="tablink">Sign in!</button>
+        </form>
+        <#else>
+            <form action="/logfood" method="GET">
+                <button class="tablink">Log food!</button>
+            </form>
+            <form action="/calendar" method="GET">
+                <button class="tablink">Calendar</button>
+            </form>
+    </#if>
+</div>
 <h1>Food Logger | ${title}</h1>
 
 

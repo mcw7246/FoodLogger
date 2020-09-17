@@ -18,7 +18,7 @@
 
 
 <h1>Food Logger | ${title}</h1>
-    <div>${signinerrormsg}</div>
+    <div class="message">${signinerrormsg}</div>
 
     <div class="container">
         <form action="/signin" method="POST">

@@ -1,6 +1,7 @@
 package com.foodlogger.ui;
 
 import com.foodlogger.application.DatabaseManager;
+import com.foodlogger.model.UserCalendar;
 import spark.*;
 
 import java.util.HashMap;
