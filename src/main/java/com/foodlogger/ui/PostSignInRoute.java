@@ -42,8 +42,8 @@ public class PostSignInRoute implements Route
     final String password = request.queryParams(PASSWORD_PARAM);
 
 
-    System.out.println("Email: " + email);
-    System.out.println("Password: " + password);
+    //System.out.println("Email: " + email);
+    //System.out.println("Password: " + password);
 
     //if there was no email field
     if(email == null){
@@ -67,7 +67,7 @@ public class PostSignInRoute implements Route
             vm.put("signinerrormsg", "The passwords don't match. Please try again.");
             return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
           }
-        }else{
+        }else{ //if the email is not in the database
           vm.put("signinerrormsg", "We don't have any record of this email. Please try again or create a new account.");
           return templateEngine.render(new ModelAndView(vm, VIEW_NAME));
         }

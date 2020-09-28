@@ -35,7 +35,7 @@ public class WebServer
     //includes the css and javascript files
     staticFileLocation("/public");
 
-    get(HOME_URL, new com.foodlogger.ui.GetHomeRoute(templateEngine));
+    get(HOME_URL, new GetHomeRoute(templateEngine));
     get(SIGNIN_URL, new GetSignInRoute(templateEngine));
     post(SIGNIN_URL, new PostSignInRoute(templateEngine, databaseManager));
     get(SIGNUP_URL, new GetSignUpRoute(templateEngine, databaseManager));

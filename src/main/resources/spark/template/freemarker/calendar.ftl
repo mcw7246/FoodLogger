@@ -6,7 +6,7 @@
     <link href='https://fonts.googleapis.com/css?family=Annie Use Your Telescope' rel='stylesheet'>
     <link rel="stylesheet" type="text/css"  href="/css/style.css">
     <link rel="stylesheet" type="text/css"  href="/css/calendar.css">
-    <script src="/js/calendar.js"></script>
+
 
 </head>
 

@@ -145,7 +145,7 @@ public class Application
 
   private void initialize()
   {
-    LOG.config("WebCheckers is initializing.");
+    LOG.config("Food Logger is initializing.");
 
 
     // configure Spark and startup the Jetty web server
@@ -153,7 +153,7 @@ public class Application
 
     // other applications might have additional services to configure
 
-    LOG.config("WebCheckers initialization complete.");
+    LOG.config("Food Logger initialization complete.");
   }
 
 }
