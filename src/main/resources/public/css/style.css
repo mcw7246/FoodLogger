@@ -1,8 +1,8 @@
 :root{
-    --main-hue : white;
-    --current-page-hue : rgb(71, 9, 6);
-    --accent-hue : rgb(117, 221, 221);
-    --top-text-hue : rgb(0, 27, 70);
+    --main-hue : #DFE0E2;
+    --current-page-hue : #79313A;
+    --accent-hue : #EB5160;
+    --top-text-hue : #071013;
     --border-hue : rgb(0, 67, 70);
     --button-hue : rgb(118, 30, 91);
 }
@@ -63,5 +63,8 @@ body{
 }
 .header{
 
+}
+button[submit]{
+    border-radius: 12px;
 }
 

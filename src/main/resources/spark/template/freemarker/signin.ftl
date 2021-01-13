@@ -3,7 +3,7 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"></meta>
     <title>Sign in</title>
-    <link href='https://fonts.googleapis.com/css?family=Annie Use Your Telescope' rel='stylesheet'>
+    <!--<link href='https://fonts.googleapis.com/css?family=Annie Use Your Telescope' rel='stylesheet'>-->
     <link rel="stylesheet" type="text/css"  href="/css/style.css">
     <link rel="stylesheet" type="text/css"  href="/css/signin.css">
 </head>

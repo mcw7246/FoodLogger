@@ -1,8 +1,6 @@
 package com.foodlogger.ui;
 
-import com.foodlogger.application.AccountManager;
 import com.foodlogger.application.DatabaseManager;
-import com.foodlogger.model.User;
 import spark.*;
 
 import java.sql.SQLException;
@@ -58,10 +56,8 @@ public class PostSignUpRoute implements Route
         //adds the user to the database
         databaseManager.addUser(email, name, psw);
 
-        AccountManager accountManager = new AccountManager();
 
         //sets the userkey to the new user and the signin boolean
-        session.attribute(GetHomeRoute.ACCOUNTMANAGER_KEY, accountManager);
         session.attribute(GetHomeRoute.EMAIL_ATTR, email);
         session.attribute(GetHomeRoute.SIGNIN_KEY, true);
         response.redirect(WebServer.HOME_URL);
@@ -71,6 +67,6 @@ public class PostSignUpRoute implements Route
     }
 
 
-    return null;
+    return "";
   }
 }

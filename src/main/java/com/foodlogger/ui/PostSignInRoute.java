@@ -41,10 +41,6 @@ public class PostSignInRoute implements Route
     final String email = request.queryParams(EMAIL_PARAM);
     final String password = request.queryParams(PASSWORD_PARAM);
 
-
-    //System.out.println("Email: " + email);
-    //System.out.println("Password: " + password);
-
     //if there was no email field
     if(email == null){
       vm.put("signinerrormsg", "Please enter an email");
@@ -60,7 +56,7 @@ public class PostSignInRoute implements Route
             session.attribute(GetHomeRoute.SIGNIN_KEY, true);
             session.attribute(GetHomeRoute.EMAIL_ATTR, email);
             response.redirect(WebServer.HOME_URL);
-            halt();
+            return "";
           }
           //password doesn't match
           else{
@@ -77,7 +73,7 @@ public class PostSignInRoute implements Route
 
     }
     response.redirect(WebServer.HOME_URL);
-    return null;
+    return "";
   }
 
 }

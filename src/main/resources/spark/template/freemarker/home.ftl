@@ -19,8 +19,9 @@
 <div class="header">
 
 <button class="tablink" formaction="#" id="active">Home</button>
+    <h1>Food Logger | ${title}</h1>
     <#if !signin>
-        <form action="/signin" method="GET">
+        <form action="/signin" method="get">
             <button class="tablink">Sign in!</button>
         </form>
         <#else>
@@ -28,11 +29,12 @@
                 <button class="tablink">Log food!</button>
             </form>
             <form action="/calendar" method="GET">
-                <button class="tablink">Calendar</button>
+                <button class="tablink" onclick="Calendar()">Calendar</button>
             </form>
     </#if>
+
 </div>
-<h1>Food Logger | ${title}</h1>
+
 
 
 

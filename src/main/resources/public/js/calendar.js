@@ -1,353 +1,290 @@
-!function() {
+function Calendar(element, options) {
+    //core variables
+    this.date = new Date();
+    this._formatDateToInit(this.date);
 
-    var today = moment();
+    this.day = this.date.getDay();
+    this.month = this.date.getMonth();
+    this.year = this.date.getFullYear();
 
-    function Calendar(selector, events) {
-        this.el = document.querySelector(selector);
-        this.events = events;
-        this.current = moment().date(1);
-        this.draw();
-        var current = document.querySelector('.today');
-        if(current) {
-            var self = this;
-            window.setTimeout(function() {
-                self.openDay(current);
-            }, 500);
-        }
-    }
+    //stores the date of today
+    this.today = this.date;
 
-    Calendar.prototype.draw = function() {
-        //Create Header
-        this.drawHeader();
+    //calendar value should always be the current date
+    this.value = this.date;
 
-        //Draw Month
-        this.drawMonth();
+    //element to insert calendar in
+    this.userElement = document.querySelector(element);
 
-        this.drawLegend();
-    }
+    //setting current date as readable text
+    this._setDateText();
 
-    Calendar.prototype.drawHeader = function() {
-        var self = this;
-        if(!this.header) {
-            //Create the header elements
-            this.header = createElement('div', 'header');
-            this.header.className = 'header';
+    //used to build the calendar
+    this.calendarWrapper = document.createElement('div');
+    this.calendarElement = document.createElement('div');
+    this.calendarHeader = document.createElement('header');
+    this.calendarHeaderTitle = document.createElement('h4');
+    this.navigationWrapper = document.createElement('section')
+    this.previousMonthArrow = document.createElement('button');
+    this.nextMonthArrow = document.createElement('button');
+    this.calendarGridDays = document.createElement('section')
+    this.calendarGrid = document.createElement('section');
+    this.calendarDayElementType = 'time';
 
-            this.title = createElement('h1');
-
-            var right = createElement('div', 'right');
-            right.addEventListener('click', function() { self.nextMonth(); });
-
-            var left = createElement('div', 'left');
-            left.addEventListener('click', function() { self.prevMonth(); });
-
-            //Append the Elements
-            this.header.appendChild(this.title);
-            this.header.appendChild(right);
-            this.header.appendChild(left);
-            this.el.appendChild(this.header);
-        }
-
-        this.title.innerHTML = this.current.format('MMMM YYYY');
-    }
-
-    Calendar.prototype.drawMonth = function() {
-        var self = this;
-
-        this.events.forEach(function(ev) {
-            ev.date = self.current.clone().date(Math.random() * (29 - 1) + 1);
-        });
-
-
-        if(this.month) {
-            this.oldMonth = this.month;
-            this.oldMonth.className = 'month out ' + (self.next ? 'next' : 'prev');
-            this.oldMonth.addEventListener('webkitAnimationEnd', function() {
-                self.oldMonth.parentNode.removeChild(self.oldMonth);
-                self.month = createElement('div', 'month');
-                self.backFill();
-                self.currentMonth();
-                self.fowardFill();
-                self.el.appendChild(self.month);
-                window.setTimeout(function() {
-                    self.month.className = 'month in ' + (self.next ? 'next' : 'prev');
-                }, 16);
-            });
-        } else {
-            this.month = createElement('div', 'month');
-            this.el.appendChild(this.month);
-            this.backFill();
-            this.currentMonth();
-            this.fowardFill();
-            this.month.className = 'month new';
-        }
-    }
-
-    Calendar.prototype.backFill = function() {
-        var clone = this.current.clone();
-        var dayOfWeek = clone.day();
-
-        if(!dayOfWeek) { return; }
-
-        clone.subtract('days', dayOfWeek+1);
-
-        for(var i = dayOfWeek; i > 0 ; i--) {
-            this.drawDay(clone.add('days', 1));
-        }
-    }
-
-    Calendar.prototype.fowardFill = function() {
-        var clone = this.current.clone().add('months', 1).subtract('days', 1);
-        var dayOfWeek = clone.day();
-
-        if(dayOfWeek === 6) { return; }
-
-        for(var i = dayOfWeek; i < 6 ; i++) {
-            this.drawDay(clone.add('days', 1));
-        }
-    }
-
-    Calendar.prototype.currentMonth = function() {
-        var clone = this.current.clone();
-
-        while(clone.month() === this.current.month()) {
-            this.drawDay(clone);
-            clone.add('days', 1);
-        }
-    }
-
-    Calendar.prototype.getWeek = function(day) {
-        if(!this.week || day.day() === 0) {
-            this.week = createElement('div', 'week');
-            this.month.appendChild(this.week);
-        }
-    }
-
-    Calendar.prototype.drawDay = function(day) {
-        var self = this;
-        this.getWeek(day);
-
-        //Outer Day
-        var outer = createElement('div', this.getDayClass(day));
-        outer.addEventListener('click', function() {
-            self.openDay(this);
-        });
-
-        //Day Name
-        var name = createElement('div', 'day-name', day.format('ddd'));
-
-        //Day Number
-        var number = createElement('div', 'day-number', day.format('DD'));
-
-
-        //Events
-        var events = createElement('div', 'day-events');
-        this.drawEvents(day, events);
-
-        outer.appendChild(name);
-        outer.appendChild(number);
-        outer.appendChild(events);
-        this.week.appendChild(outer);
-    }
-
-    Calendar.prototype.drawEvents = function(day, element) {
-        if(day.month() === this.current.month()) {
-            var todaysEvents = this.events.reduce(function(memo, ev) {
-                if(ev.date.isSame(day, 'day')) {
-                    memo.push(ev);
-                }
-                return memo;
-            }, []);
-
-            todaysEvents.forEach(function(ev) {
-                var evSpan = createElement('span', ev.color);
-                element.appendChild(evSpan);
-            });
-        }
-    }
-
-    Calendar.prototype.getDayClass = function(day) {
-        classes = ['day'];
-        if(day.month() !== this.current.month()) {
-            classes.push('other');
-        } else if (today.isSame(day, 'day')) {
-            classes.push('today');
-        }
-        return classes.join(' ');
-    }
-
-    Calendar.prototype.openDay = function(el) {
-        var details, arrow;
-        var dayNumber = +el.querySelectorAll('.day-number')[0].innerText || +el.querySelectorAll('.day-number')[0].textContent;
-        var day = this.current.clone().date(dayNumber);
-
-        var currentOpened = document.querySelector('.details');
-
-        //Check to see if there is an open detais box on the current row
-        if(currentOpened && currentOpened.parentNode === el.parentNode) {
-            details = currentOpened;
-            arrow = document.querySelector('.arrow');
-        } else {
-            //Close the open events on differnt week row
-            //currentOpened && currentOpened.parentNode.removeChild(currentOpened);
-            if(currentOpened) {
-                currentOpened.addEventListener('webkitAnimationEnd', function() {
-                    currentOpened.parentNode.removeChild(currentOpened);
-                });
-                currentOpened.addEventListener('oanimationend', function() {
-                    currentOpened.parentNode.removeChild(currentOpened);
-                });
-                currentOpened.addEventListener('msAnimationEnd', function() {
-                    currentOpened.parentNode.removeChild(currentOpened);
-                });
-                currentOpened.addEventListener('animationend', function() {
-                    currentOpened.parentNode.removeChild(currentOpened);
-                });
-                currentOpened.className = 'details out';
-            }
-
-            //Create the Details Container
-            details = createElement('div', 'details in');
-
-            //Create the arrow
-            var arrow = createElement('div', 'arrow');
-
-            //Create the event wrapper
-
-            details.appendChild(arrow);
-            el.parentNode.appendChild(details);
-        }
-
-        var todaysEvents = this.events.reduce(function(memo, ev) {
-            if(ev.date.isSame(day, 'day')) {
-                memo.push(ev);
-            }
-            return memo;
-        }, []);
-
-        this.renderEvents(todaysEvents, details);
-
-        arrow.style.left = el.offsetLeft - el.parentNode.offsetLeft + 27 + 'px';
-    }
-
-    Calendar.prototype.renderEvents = function(events, ele) {
-        //Remove any events in the current details element
-        var currentWrapper = ele.querySelector('.events');
-        var wrapper = createElement('div', 'events in' + (currentWrapper ? ' new' : ''));
-
-        events.forEach(function(ev) {
-            var div = createElement('div', 'event');
-            var square = createElement('div', 'event-category ' + ev.color);
-            var span = createElement('span', '', ev.eventName);
-
-            div.appendChild(square);
-            div.appendChild(span);
-            wrapper.appendChild(div);
-        });
-
-        if(!events.length) {
-            var div = createElement('div', 'event empty');
-            var span = createElement('span', '', 'No Events');
-
-            div.appendChild(span);
-            wrapper.appendChild(div);
-        }
-
-        if(currentWrapper) {
-            currentWrapper.className = 'events out';
-            currentWrapper.addEventListener('webkitAnimationEnd', function() {
-                currentWrapper.parentNode.removeChild(currentWrapper);
-                ele.appendChild(wrapper);
-            });
-            currentWrapper.addEventListener('oanimationend', function() {
-                currentWrapper.parentNode.removeChild(currentWrapper);
-                ele.appendChild(wrapper);
-            });
-            currentWrapper.addEventListener('msAnimationEnd', function() {
-                currentWrapper.parentNode.removeChild(currentWrapper);
-                ele.appendChild(wrapper);
-            });
-            currentWrapper.addEventListener('animationend', function() {
-                currentWrapper.parentNode.removeChild(currentWrapper);
-                ele.appendChild(wrapper);
-            });
-        } else {
-            ele.appendChild(wrapper);
-        }
-    }
-
-    Calendar.prototype.drawLegend = function() {
-        var legend = createElement('div', 'legend');
-        var calendars = this.events.map(function(e) {
-            return e.calendar + '|' + e.color;
-        }).reduce(function(memo, e) {
-            if(memo.indexOf(e) === -1) {
-                memo.push(e);
-            }
-            return memo;
-        }, []).forEach(function(e) {
-            var parts = e.split('|');
-            var entry = createElement('span', 'entry ' +  parts[1], parts[0]);
-            legend.appendChild(entry);
-        });
-        this.el.appendChild(legend);
-    }
-
-    Calendar.prototype.nextMonth = function() {
-        this.current.add('months', 1);
-        this.next = true;
-        this.draw();
-    }
-
-    Calendar.prototype.prevMonth = function() {
-        this.current.subtract('months', 1);
-        this.next = false;
-        this.draw();
-    }
-
-    window.Calendar = Calendar;
-
-    function createElement(tagName, className, innerText) {
-        var ele = document.createElement(tagName);
-        if(className) {
-            ele.className = className;
-        }
-        if(innerText) {
-            ele.innderText = ele.textContent = innerText;
-        }
-        return ele;
-    }
-}();
-
-!function() {
-    var data = [
-        { eventName: 'Lunch Meeting w/ Mark', calendar: 'Work', color: 'orange' },
-        { eventName: 'Interview - Jr. Web Developer', calendar: 'Work', color: 'orange' },
-        { eventName: 'Demo New App to the Board', calendar: 'Work', color: 'orange' },
-        { eventName: 'Dinner w/ Marketing', calendar: 'Work', color: 'orange' },
-
-        { eventName: 'Game vs Portalnd', calendar: 'Sports', color: 'blue' },
-        { eventName: 'Game vs Houston', calendar: 'Sports', color: 'blue' },
-        { eventName: 'Game vs Denver', calendar: 'Sports', color: 'blue' },
-        { eventName: 'Game vs San Degio', calendar: 'Sports', color: 'blue' },
-
-        { eventName: 'School Play', calendar: 'Kids', color: 'yellow' },
-        { eventName: 'Parent/Teacher Conference', calendar: 'Kids', color: 'yellow' },
-        { eventName: 'Pick up from Soccer Practice', calendar: 'Kids', color: 'yellow' },
-        { eventName: 'Ice Cream Night', calendar: 'Kids', color: 'yellow' },
-
-        { eventName: 'Free Tamale Night', calendar: 'Other', color: 'green' },
-        { eventName: 'Bowling Team', calendar: 'Other', color: 'green' },
-        { eventName: 'Teach Kids to Code', calendar: 'Other', color: 'green' },
-        { eventName: 'Startup Weekend', calendar: 'Other', color: 'green' }
+    // Hard-coded list of all days.
+    this.listOfAllDaysAsText = [
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+        'Sunday'
     ];
 
+    // Hard-coded list of all months.
+    this.listOfAllMonthsAsText = [
+        'January',
+        'February',
+        'March',
+        'April',
+        'May',
+        'June',
+        'July',
+        'August',
+        'September',
+        'October',
+        'November',
+        'December'
+    ];
 
+    // Creating the calendar
+    this.calendarWrapper.id = 'calendar-wrapper';
+    this.calendarElement.id = 'calendar';
+    this.calendarGridDays.id = 'calendar-days';
+    this.calendarGrid.id = 'calendar-grid';
+    this.navigationWrapper.id = 'navigation-wrapper';
+    this.previousMonthArrow.id = 'previous-month';
+    this.nextMonthArrow.id = 'next-month';
 
-    function addDate(ev) {
+    this._insertHeaderIntoCalendarWrapper();
+    this._insertCalendarGridDaysHeader();
+    this._insertDaysIntoGrid();
+    this._insertNavigationButtons();
+    this._insertCalendarIntoWrapper();
 
+    this.userElement.appendChild(this.calendarWrapper);
+}
+
+/**
+ * @param {Number} The month number, 0 based.
+ * @param {Number} The year, not zero based, required to account for leap years.
+ * @return {Array<Date>} List with date objects for each day of the month.
+ * @author Juan Mendes - 30th October 2012.
+ */
+CalendarPicker.prototype._getDaysInMonth = function (month, year) {
+    if ((!month && month !== 0) || (!year && year !== 0)) return;
+
+    var date = new Date(year, month, 1);
+    var days = [];
+
+    while (date.getMonth() === month) {
+        days.push(new Date(date));
+        date.setDate(date.getDate() + 1);
+    }
+    return days;
+}
+
+/**
+ * @param {DateObject} date.
+ * @description Sets the clock of a date to 00:00:00 to be consistent.
+ */
+CalendarPicker.prototype._formatDateToInit = function (date) {
+    if (!date) return;
+    date.setHours(0, 0, 0);
+}
+
+/**
+ * @description Sets the current date as readable text in their own variables
+ */
+CalendarPicker.prototype._setDateText = function () {
+    // Setting current date as readable text.
+    var dateData = this.date.toString().split(' ');
+    this.dayAsText = dateData[0];
+    this.monthAsText = dateData[1];
+    this.dateAsText = dateData[2];
+    this.yearAsText = dateData[3];
+}
+
+/**
+ * @description Inserts the calendar into the wrapper and adds eventListeners for the calender-grid.
+ */
+CalendarPicker.prototype._insertCalendarIntoWrapper = function () {
+    this.calendarWrapper.appendChild(this.calendarElement);
+
+    /**
+     * @param {Event} event An event from an eventListener.
+     */
+    var handleSelectedElement = (event) => {
+        if (event.target.nodeName.toLowerCase() === this.calendarDayElementType && !event.target.classList.contains('disabled')) {
+
+            // Removes the 'selected' class from all elements that have it.
+            Array.from(document.querySelectorAll('.selected')).forEach(element => element.classList.remove('selected'));
+
+            // Adds the 'selected'-class to the selected date.
+            event.target.classList.add('selected');
+
+            this.value = event.target.value;
+
+            // Fires the onValueChange function with the provided callback.
+            this.onValueChange(this.callback);
+        }
     }
 
-    var calendar = new Calendar('#calendar', data);
+    this.calendarGrid.addEventListener('click', handleSelectedElement, false);
 
-}();
+    this.calendarGrid.addEventListener('keydown', (keyEvent) => {
+        if (keyEvent.key !== 'Enter') return;
+
+        handleSelectedElement(keyEvent);
+    }, false);
+}
+
+/**
+ * @description Adds the "main" calendar-header.
+ */
+CalendarPicker.prototype._insertHeaderIntoCalendarWrapper = function () {
+    this.calendarHeaderTitle.textContent = `${this.listOfAllMonthsAsText[this.month]} - ${this.year}`;
+    this.calendarHeader.appendChild(this.calendarHeaderTitle);
+    this.calendarWrapper.appendChild(this.calendarHeader);
+}
+
+/**
+ * @description Inserts the calendar-grid header with all the weekdays.
+ */
+CalendarPicker.prototype._insertCalendarGridDaysHeader = function () {
+    this.listOfAllDaysAsText.forEach(day => {
+        var dayElement = document.createElement('span');
+        dayElement.textContent = day;
+        this.calendarGridDays.appendChild(dayElement);
+    })
+
+    this.calendarElement.appendChild(this.calendarGridDays);
+}
+
+/**
+ * @description Adds the "Previous" and "Next" arrows on the side-navigation.
+ * Also inits the click-events used to navigating.
+ */
+CalendarPicker.prototype._insertNavigationButtons = function () {
+    // Ugly long string, but at least the svg is pretty.
+    var arrowSvg = '<svg enable-background="new 0 0 386.257 386.257" viewBox="0 0 386.257 386.257" xmlns="http://www.w3.org/2000/svg"><path d="m0 96.879 193.129 192.5 193.128-192.5z"/></svg>';
+
+    this.previousMonthArrow.innerHTML = arrowSvg;
+    this.nextMonthArrow.innerHTML = arrowSvg;
+
+    this.previousMonthArrow.setAttribute('aria-label', 'Go to previous month');
+    this.nextMonthArrow.setAttribute('aria-label', 'Go to next month');
+
+    this.navigationWrapper.appendChild(this.previousMonthArrow);
+    this.navigationWrapper.appendChild(this.nextMonthArrow);
+
+    // Cannot use arrow-functions for IE support :(
+    var that = this;
+    this.navigationWrapper.addEventListener('click', function (clickEvent) {
+        if (clickEvent.target.closest(`#${that.previousMonthArrow.id}`)) {
+            if (that.month === 0) {
+                that.month = 11;
+                that.year -= 1;
+            } else {
+                that.month -= 1;
+            }
+            that._updateCalendar();
+        }
+
+        if (clickEvent.target.closest(`#${that.nextMonthArrow.id}`)) {
+            if (that.month === 11) {
+                that.month = 0;
+                that.year += 1;
+            } else {
+                that.month += 1;
+            }
+            that._updateCalendar();
+        }
+    }, false)
+
+    that.calendarElement.appendChild(that.navigationWrapper);
+}
+
+/**
+ * @description Adds all the days for current month into the calendar-grid.
+ * Takes into account which day the month starts on, so that "empty/placeholder" days can be added
+ * in case the month for example starts on a Thursday.
+ * Also disables the days that are not within the provided.
+ */
+CalendarPicker.prototype._insertDaysIntoGrid = function () {
+    this.calendarGrid.innerHTML = '';
+
+    var arrayOfDays = this._getDaysInMonth(this.month, this.year);
+    var firstDayOfMonth = arrayOfDays[0].getDay();
+
+    // Converting Sunday (0 when using getDay()) to 7 to make it easier to work with.
+    firstDayOfMonth = firstDayOfMonth === 0 ? 7 : firstDayOfMonth;
+
+    if (1 < firstDayOfMonth) {
+        arrayOfDays = Array(firstDayOfMonth - 1).fill(false, 0).concat(arrayOfDays);
+    }
+
+    arrayOfDays.forEach(date => {
+        var dateElement = document.createElement(date ? this.calendarDayElementType : 'span');
+        var Date = date.toString().split(' ')[2];
+
+        var dateIsTheCurrentValue = this.value.toString() === date.toString();
+        if (dateIsTheCurrentValue) this.activeDateElement = dateElement;
+
+        var dateIsBetweenAllowedRange = (this.min || this.max) && (date.toString() !== this.today.toString() && (date < this.min || date > this.max))
+        if (dateIsBetweenAllowedRange) {
+            dateElement.classList.add('disabled');
+        } else {
+            dateElement.tabIndex = 0;
+            dateElement.value = date;
+        }
+
+        dateElement.textContent = date ? `${Date}` : '';
+        this.calendarGrid.appendChild(dateElement);
+    })
+
+    this.calendarElement.appendChild(this.calendarGrid);
+    this.activeDateElement.classList.add('selected');
+}
+
+/**
+ * @description Updates the core-values for the calendar based on the new month and year
+ * given by the navigation. Also updates the UI with the new values.
+ */
+CalendarPicker.prototype._updateCalendar = function () {
+    this.date = new Date(this.year, this.month);
+
+    this._setDateText();
+
+    this.day = this.date.getDay();
+    this.month = this.date.getMonth();
+    this.year = this.date.getFullYear();
+
+    // Cannot use arrow-functions for IE support :(
+    var that = this;
+    window.requestAnimationFrame(function () {
+        that.calendarHeaderTitle.textContent = `${that.listOfAllMonthsAsText[that.month]} - ${that.year}`;
+        that._insertDaysIntoGrid();
+    })
+}
+
+/**
+ * @param {Function} callback
+ * @description A "listener" that lets the user do something everytime the value changes.
+ */
+CalendarPicker.prototype.onValueChange = function (callback) {
+    if (this.callback) return this.callback(this.value);
+    this.callback = callback;
+}
+

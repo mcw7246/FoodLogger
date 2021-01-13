@@ -8,6 +8,7 @@
     <link rel="stylesheet" type="text/css"  href="/css/calendar.css">
 
 
+
 </head>
 
 <body>
@@ -22,7 +23,6 @@
 
 <div id="calendar"></div>
 
-
-
 </body>
+<script data-main="/js" src="js/calendar.js"></script>
 </html>
